@@ -15,12 +15,13 @@ module.exports = (sequelize, Sequelize) => {
         arrTime: {
             type:Sequelize.STRING
         },
-        time: {
+        duration: {
             type: Sequelize.STRING
         },
         fare: {
             type: Sequelize.STRING
         }
+
     });
 
     return Flights;

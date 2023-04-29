@@ -11,7 +11,7 @@ router.get("/:id", flights.findOne);
 
 router.put("/:id", flights.update);
 
-router.delete("/", flights.delete);
+router.delete("/:id", flights.delete);
 
 router.delete("/", flights.deleteAll);
 
