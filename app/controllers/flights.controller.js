@@ -1,14 +1,17 @@
+const express = require('express');
+const createError = require('http-errors');
 const db = require("../models");
+
 const Flights = db.flights;
-const Op = db.Sequelize.Op;
 
 //create and save new flight
-exports.create = (req, res) => {
+exports.create = (req, res, next) => {
 
     const { name, from, to, depTime, arrTime, duration, fare, logo} = req.body;
 
     if(!(name && from && to && depTime && arrTime && duration && fare && logo)) {
-        res.status(400).send({
+        
+        next(createError(400, {
             message: "Content can't be empty",
             requiredData : {
                 "name": "string",
@@ -20,7 +23,7 @@ exports.create = (req, res) => {
                 "fare": "number",
                 "logo": "url (string)"
             }
-        });
+        }))
         return;
     }
 
@@ -41,27 +44,27 @@ exports.create = (req, res) => {
         res.send(data);
     })
     .catch((err) => {
-        res.status(500).send({
+        next(createError(500, {
             message: err.message || "Some error occured while creating the flight"
-        })
+        }));
     });
 }
 
 //Retrieve all flights from db
-exports.findAll = (req, res) => {
+exports.findAll = (req, res, next) => {
     Flights.findAll()
     .then((data) => {
         res.send(data);
     })
     .catch((err) => {
-        res.status(500).send({
+        next(createError(500, {
             message: err.message || "Some error occured while retrieving flights"
-        });
+        }))
     });
 }
 
 //Find a single flight with an id
-exports.findOne = (req, res) => {
+exports.findOne = (req, res, next) => {
     const id = req.params.id;
 
     Flights.findByPk(id)
@@ -70,19 +73,15 @@ exports.findOne = (req, res) => {
             res.send(data);
         }
         else {
-            res.status(404).send({
-                message: `Can't find flight with id=${id}`
-            });
+            next(createError(404, `Can't find flight with id=${id}`))
         }
     })
     .catch((err) => {
-        res.status(500).send({
-            message: `Error retrieving flight with id=${id}`
-        });
+        next(createError(500, `Error retrieving flight with id=${id}`));
     });
 }
 
-exports.update = (req, res) => {
+exports.update = (req, res, next) => {
     const id = req.params.id;
 
     Flights.update(req.body, {
@@ -95,19 +94,15 @@ exports.update = (req, res) => {
             });
         }
         else {
-            res.send({
-                message: `Cannot update flight with id=${id}. Maybe flight was not found or req.body is empty!`
-              });
+            next(createError(400, `Cannot update flight with id=${id}. Maybe flight was not found or req.body is empty!`));
         }
     })
     .catch((err) => {
-        res.status(500).send({
-          message: "Error updating flight with id=" + id
-        });
-      });
+        next(createError(500, "Error updating flight with id=" + id));
+    });
 }
 
-exports.delete = (req, res) => {
+exports.delete = (req, res, next) => {
     const id = req.params.id;
 
     Flights.destroy({
@@ -119,15 +114,11 @@ exports.delete = (req, res) => {
                 message: "Flight was deleted successfully!"
             });
         } else {
-            res.send({
-                message: `Cannot delete flight with id=${id}. Maybe flight was not found!`
-            });
+            next(createError(404, `Cannot delete flight with id=${id}. Maybe flight was not found!`));
         }
     })
     .catch(err => {
-        res.status(500).send({
-          message: "Could not delete flight with id=" + id
-        });
+        next(createError(500, "Could not delete flight with id=" + id));
     });
 }
 
@@ -142,8 +133,8 @@ exports.deleteAll = (req, res) => {
         })
     })
     .catch((err) => {
-        res.status(500).send({
+        next(createError(500, {
             message: err.message || "Some error occurred while removing all flights."
-        })
+        }));
     })
 }
