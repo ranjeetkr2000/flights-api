@@ -134,7 +134,7 @@ exports.delete = (req, res) => {
 exports.deleteAll = (req, res) => {
     Flights.destroy({
         where : {},
-        truncate: true
+        truncate: false
     })
     .then((nums) => {
         res.send({
