@@ -5,9 +5,9 @@ const Op = db.Sequelize.Op;
 //create and save new flight
 exports.create = (req, res) => {
 
-    const { name, from, to, depTime, arrTime, time, fare, logo} = req.body;
+    const { name, from, to, depTime, arrTime, duration, fare, logo} = req.body;
 
-    if(!(name && from && to && depTime && arrTime && time && fare && logo)) {
+    if(!(name && from && to && depTime && arrTime && duration && fare && logo)) {
         res.status(400).send({
             message: "Content can't be empty",
             requiredData : {
@@ -16,7 +16,7 @@ exports.create = (req, res) => {
                 "to" : "string",
                 "depTime" : "string",
                 "arrTime": "string",
-                "time": "string",
+                "duration": "string",
                 "fare": "number",
                 "logo": "url (string)"
             }
@@ -31,8 +31,9 @@ exports.create = (req, res) => {
         to,
         depTime,
         arrTime,
-        time,
+        duration,
         fare,
+        logo,
     };
 
     Flights.create(flight)
@@ -133,7 +134,7 @@ exports.delete = (req, res) => {
 exports.deleteAll = (req, res) => {
     Flights.destroy({
         where : {},
-        truncate: false
+        truncate: true
     })
     .then((nums) => {
         res.send({
