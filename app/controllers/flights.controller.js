@@ -5,12 +5,21 @@ const Op = db.Sequelize.Op;
 //create and save new flight
 exports.create = (req, res) => {
 
-    const { name, from, to, depTime, arrTime, time, fare} = req.body;
+    const { name, from, to, depTime, arrTime, time, fare, logo} = req.body;
 
-    if(!(name && from && to && depTime && arrTime && time && fare)) {
+    if(!(name && from && to && depTime && arrTime && time && fare && logo)) {
         res.status(400).send({
             message: "Content can't be empty",
-            requiredData : "name, from, to, depTime, arrTime, time, fare"
+            requiredData : {
+                "name": "string",
+                "from": "string",
+                "to" : "string",
+                "depTime" : "string",
+                "arrTime": "string",
+                "time": "string",
+                "fare": "number",
+                "logo": "url (string)"
+            }
         });
         return;
     }

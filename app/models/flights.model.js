@@ -19,9 +19,13 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING
         },
         fare: {
+            type: Sequelize.INTEGER
+        },
+        logo: {
             type: Sequelize.STRING
         }
-
+    }, {
+        timestamps: false,
     });
 
     return Flights;
